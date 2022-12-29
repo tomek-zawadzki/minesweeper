@@ -1,4 +1,4 @@
-import { UI } from "./ui.js";
+import { UI } from "./UI.js";
 
 export class Cell extends UI {
   constructor(x, y) {
@@ -28,5 +28,10 @@ export class Cell extends UI {
     this.isReveal = true;
     this.element.classList.remove("border--concave");
     this.element.classList.add("border--revealed");
+  }
+
+  addMine() {
+    this.isMine = true;
+    
   }
 }
