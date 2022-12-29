@@ -65,8 +65,13 @@ class Game extends UI {
     this.#addCellsEventsListeners();
   }
 
-  #endGame() {
+  #endGame(isWin) {
     this.#isGameFinished = true;
+    this.#timer.stopTimer();
+
+    if (!isWin) {
+      this.#revealMines();
+    }
   }
 
   #handleElements() {
@@ -149,9 +154,16 @@ class Game extends UI {
 
   #clickCell(cell) {
     if (cell.isMine) {
-      return;
+      this.#endGame(false);
     }
     cell.revealCell();
+  }
+
+  #revealMines() {
+    this.#cells
+      .flat()
+      .filter(({ isMine }) => isMine)
+      .forEach((cell) => cell.revealCell());
   }
 
   #setStyles() {
