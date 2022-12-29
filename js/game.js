@@ -138,7 +138,7 @@ class Game extends UI {
 
     const cell = this.#cells[rowIndex][colIndex];
 
-    if (cell.isReveal) return;
+    if (cell.isReveal || this.#isGameFinished) return;
 
     if (cell.isFlagged) {
       this.#counter.increment();
@@ -153,10 +153,11 @@ class Game extends UI {
   };
 
   #clickCell(cell) {
+    if (this.#isGameFinished || cell.isFlagged) return;
     if (cell.isMine) {
       this.#endGame(false);
     }
-    cell.revealCell();
+    this.#setCellValue(cell);
   }
 
   #revealMines() {
@@ -164,6 +165,25 @@ class Game extends UI {
       .flat()
       .filter(({ isMine }) => isMine)
       .forEach((cell) => cell.revealCell());
+  }
+
+  #setCellValue(cell) {
+    let minesCount = 0;
+    for (
+      let rowIndex = Math.max(cell.y - 1, 0);
+      rowIndex <= Math.min(cell.y + 1, this.#numberOfRows - 1);
+      rowIndex++
+    ) {
+      for (
+        let colIndex = Math.max(cell.x - 1, 0);
+        colIndex <= Math.min(cell.x + 1, this.#numberofCols - 1);
+        colIndex++
+      ) {
+        if (this.#cells[rowIndex][colIndex].isMine) minesCount++;
+      }
+    }
+    cell.value = minesCount;
+    cell.revealCell();
   }
 
   #setStyles() {
